@@ -1,13 +1,15 @@
 from .Types.Card import (
-    Card, 
+    Card,
     Rock, Paper, Scissors,
     Gun, Lighting, Devil, Dragon,
-    Water, Air, Sponge, Wolf, Tree, 
+    Water, Air, Sponge, Wolf, Tree,
     Human, Snake, Fire
 )
 from .Types.Player import Player
-from typing import List
+from typing import List, Dict
 from random import choice
+from .Match import Match
+import uuid
 
 
 class RpsCore:
@@ -19,6 +21,20 @@ class RpsCore:
             Air(),   Human(),    Snake(),
             Fire(),  Tree(),     Sponge(),
         ]
+        self.__matches: Dict[str, Match] = {}
+
+    def GetMatch(self, match_id: str, out=None) -> Match:
+        return self.__matches.get(match_id, out)
+
+    @property
+    def NewMatch(self) -> str:
+        match_id = str(uuid.uuid4())
+        while(match_id in self.__matches):
+            match_id = str(uuid.uuid4())
+
+        match = Match(self)
+        self.__matches[match_id] = match
+        return match_id
 
     def Random(self, to_skip: List[str] = []):
         return choice([x for x in self.__valid_tags if x.Tag not in to_skip])
@@ -37,14 +53,14 @@ class RpsCore:
 
     def Fight(self, card1: str, card2: str) -> str:
         if not self.IsValid(card1) or not self.IsValid(card2):
-            return None 
+            return None
 
         card1 = self.GetCard(card1)
         card2 = self.GetCard(card2)
 
         if card1 == card2:
             return "draw"
-        
+
         if card1.CanWin(card2):
             return card1.Tag
         else:
@@ -57,4 +73,3 @@ class RpsCore:
                 return player2
             else:
                 return player1
-            

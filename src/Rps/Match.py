@@ -1,10 +1,9 @@
 from .Types.Player import Player
 from typing import Dict, Any
-from .RpsCore import RpsCore
 
 
 class Match:
-    def __init__(self, core: RpsCore):
+    def __init__(self, core):
         self.__players = {}
         self.__core = core
         self.__all_cards = [x.Tag for x in self.__core.AllCards]
@@ -23,7 +22,9 @@ class Match:
 
     def IsDone(self, player_id: Any):
         if not self.__players[player_id]['is_done']:
-            isDone = len(self.__players[player_id]['played_cards']) == len(self.__all_cards)
+            isDone = len(
+                self.__players[player_id]['played_cards']
+            ) == len(self.__all_cards)
             self.__players[player_id]['is_done'] = isDone
             return isDone
         else:
@@ -31,7 +32,9 @@ class Match:
 
     def AvailableCards(self, player_id: Any):
         if player_id in self.__players:
-            return [x for x in self.__all_cards if x not in self.__players[player_id]['played_cards']]
+            return [
+                x for x in self.__all_cards
+                if x not in self.__players[player_id]['played_cards']]
 
     def NotAvailableCards(self, player_id: Any):
         if player_id in self.__players:
@@ -55,7 +58,10 @@ class Match:
 
                 if players_moves[x] not in self.__players[x]['played_cards']:
                     for player in self.__players:
-                        if {x, player} in played_already or {player, x} in played_already:
+                        if (
+                            {x, player} in played_already
+                            or {player, x} in played_already
+                        ):
                             continue
 
                         if player == x:
@@ -114,13 +120,9 @@ class Match:
                                     else:
                                         self.__players[player]['draw_with'][x] = 0
 
-            
         for user in in_round_status:
             if in_round_status[user]['win'] < in_round_status[user]['lose']:
                 self.__players[user]['played_cards'].append(players_moves[user])    
 
             if in_round_status[user]['win'] > self.__players[user]['most_win_in_round']:
                 self.__players[user]['most_win_in_round'] = in_round_status[user]['win']
-
-
-        

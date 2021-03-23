@@ -8,7 +8,7 @@ class Match:
         self.__core = core
         self.__all_cards = [x.Tag for x in self.__core.AllCards]
 
-    def AddPlayer(self, player_id):
+    def AddPlayer(self, player_id) -> bool:
         if player_id not in self.__players:
             self.__players[player_id] = {
                 'point': 0,
@@ -19,6 +19,8 @@ class Match:
                 'most_win_in_round': 0,
                 'is_done': False
             }
+            return True
+        return False
 
     def IsDone(self, player_id: Any):
         if not self.__players[player_id]['is_done']:
